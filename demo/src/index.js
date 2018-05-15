@@ -9,42 +9,39 @@ const PATTERNS = [
   '1111 1111',
   '111 111',
   '11 11',
-  '1 1'
+  '1 1',
 ]
 
-const App = React.createClass({
-  getInitialState() {
-    return {
-      card: '',
-      expiry: '',
-      ccv: '',
-      plate: '',
-      escaped: '',
-      leading: '',
-      custom: '',
-      changing: '',
-      pattern: '1111 1111',
-      cardPattern: '1111 1111 1111 1111'
-    }
-  },
+class App extends React.Component {
+  state = {
+    card: '',
+    expiry: '',
+    ccv: '',
+    plate: '',
+    escaped: '',
+    leading: '',
+    custom: '',
+    changing: '',
+    pattern: '1111 1111',
+    cardPattern: '1111 1111 1111 1111',
+  }
 
-  _onChange(e) {
-    const stateChange = {}
-    stateChange[e.target.name] = e.target.value
-    this.setState(stateChange)
-  },
+  _onChange = (e) => {
+    this.setState({[e.target.name]: e.target.value})
+  }
 
-  _changePattern(e) {
+  _changePattern = (e) => {
     this.setState({pattern: e.target.value})
-  },
+  }
 
-  _onCardChange(e) {
-    if(/^3[47]/.test(e.target.value)) {
-      this.setState({cardPattern: "1111 111111 11111"})
-    } else {
+  _onCardChange = (e) => {
+    if (/^3[47]/.test(e.target.value)) {
+      this.setState({cardPattern: '1111 111111 11111'})
+    }
+    else {
       this.setState({cardPattern: '1111 1111 1111 1111'})
     }
-  },
+  }
 
   render() {
     return <div className="App">
@@ -100,7 +97,7 @@ const App = React.createClass({
         <label htmlFor="changing">Credit Card:</label>
         <MaskedInput mask={this.state.cardPattern} name="creditCard" id="creditCard" onChange={this._onCardChange}/>
       </div>
-      <p>Custom format character (W=[a-zA-Z0-9_], transformed to uppercase) and placeholder character (en space):</p>
+      <p>Custom format character (<code>W=[a-zA-Z0-9_]</code>, transformed to uppercase) and placeholder character (en space):</p>
       <div className="form-field">
         <label htmlFor="custom">Custom:</label>
         <CustomInput name="custom" id="custom" onChange={this._onChange}/>
@@ -111,24 +108,21 @@ const App = React.createClass({
       <footer><a href="https://github.com/insin/react-maskedinput">Source on GitHub</a></footer>
     </div>
   }
-})
+}
 
-const CustomInput = React.createClass({
-  render() {
-    return <MaskedInput
-      mask="1111-WW-11"
-      placeholder="1234-WW-12"
-      placeholderChar=" "
-      size="11"
-      {...this.props}
-      formatCharacters={{
-        'W': {
-          validate(char) { return /\w/.test(char) },
-          transform(char) { return char.toUpperCase() }
-        }
+let CustomInput = (props) =>
+  <MaskedInput
+    mask="1111-WW-11"
+    placeholder="1234-WW-12"
+    placeholderChar=" "
+    size="11"
+    {...props}
+    formatCharacters={{
+      'W': {
+        validate: (char) => /\w/.test(char),
+        transform: (char) => char.toUpperCase()
       }
-    }/>
-  }
-})
+    }}
+  />
 
 render(<App/>, document.getElementById('demo'))
